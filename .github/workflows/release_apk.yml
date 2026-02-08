@@ -1,0 +1,71 @@
+name: Build Release APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Build type to create'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - beta
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Code
+        uses: actions/checkout@v6
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version-file: .github/workflows/.java-version
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Decode Keystore
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/release.keystore"
+
+      - name: Create gradle.properties with signing config
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        run: |
+          cat >> app/gradle.properties << EOF
+          STORE_FILE=$GITHUB_WORKSPACE/release.keystore
+          STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+          EOF
+
+      - name: Build Release APK
+        run: |
+          if [ "${{ github.event.inputs.release_type }}" == "beta" ]; then
+            ./gradlew assembleMadaniBeta
+          else
+            ./gradlew assembleMadaniRelease
+          fi
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v6
+        if: success()
+        with:
+          name: release-apk-${{ github.event.inputs.release_type }}
+          path: |
+            app/build/outputs/apk/madani/${{ github.event.inputs.release_type }}/app-madani-${{ github.event.inputs.release_type }}.apk
+          retention-days: 30
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx8G -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:+UseParallelGC -Dfile.encoding=UTF-8"
