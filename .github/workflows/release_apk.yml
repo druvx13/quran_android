@@ -20,6 +20,8 @@ jobs:
   build:
     name: Build Release APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v6
