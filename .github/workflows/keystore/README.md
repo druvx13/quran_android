@@ -61,6 +61,8 @@ For production apps or public repositories, use GitHub Secrets instead.
 
 ## Files in This Directory
 
-- `release.keystore` - Your Android keystore file (ready to use with default credentials)
-- `signing.properties` - Signing configuration (configured with default credentials)
+- `release.keystore` - Your Android keystore file (pre-configured with placeholder credentials for testing/private use)
+- `signing.properties` - Signing configuration (pre-configured with placeholder credentials - change for production use)
 - `README.md` - This file
+
+**Note**: The default keystore and credentials provided are for private/testing use only. For production apps, generate your own keystore and use secure passwords.
