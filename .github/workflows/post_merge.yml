@@ -37,7 +37,7 @@ jobs:
           path: "app/build/outputs/apk/madani/debug/app-madani-debug.apk"
 
       - name: Get dependencies list
-        run: ./gradlew :app:dependencies --configuration madaniReleaseRuntimeClasspath > dependencies.txt
+        run: ./gradlew :app:dependencies --configuration madaniReleaseRuntimeClasspath -PdisableFirebase > dependencies.txt
 
       - name: Upload dependencies list
         uses: actions/upload-artifact@v6
