@@ -1,0 +1,15 @@
+⚠️ PLACEHOLDER KEYSTORE - REPLACE WITH YOUR OWN FOR PRODUCTION
+
+This directory contains a placeholder keystore for testing purposes.
+
+Current Configuration:
+- Keystore: release.keystore (placeholder)
+- Password: placeholder123
+- Key Alias: release_key
+
+To use your own keystore:
+1. Replace release.keystore with your keystore file
+2. Update signing.properties with your credentials
+3. See README.md for detailed instructions
+
+The current placeholder keystore works for testing but should NOT be used for production releases.
