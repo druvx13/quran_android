@@ -12,8 +12,13 @@ A manually triggered workflow that builds a release APK for distribution.
 
 **Features**:
 - Builds either a `release` or `beta` APK variant
-- Supports signing with keystore (requires GitHub secrets configuration)
+- Uses local keystore and signing configuration from `keystore/` directory
 - Uploads the built APK as a GitHub Actions artifact with 30-day retention
+
+**Setup**:
+1. Add your keystore file to `.github/workflows/keystore/release.keystore`
+2. Update `.github/workflows/keystore/signing.properties` with your signing credentials
+3. See [keystore/README.md](keystore/README.md) for detailed setup instructions
 
 **Usage**:
 1. Go to the [Actions tab](../../actions) in the GitHub repository
@@ -23,13 +28,7 @@ A manually triggered workflow that builds a release APK for distribution.
 5. Click "Run workflow" to start the build
 6. Once complete, download the APK from the workflow run artifacts
 
-**Required Secrets** (for signed builds):
-- `KEYSTORE_BASE64`: Base64-encoded keystore file
-- `STORE_PASSWORD`: Keystore password
-- `KEY_ALIAS`: Key alias
-- `KEY_PASSWORD`: Key password
-
-**Note**: If secrets are not configured, the build will use default values from `app/gradle.properties` and may fail for release builds. Ensure proper signing configuration is set up in repository secrets for production releases.
+**Note**: This workflow uses local files for signing configuration, which is suitable for personal/private repositories. The `keystore/` directory contains a placeholder keystore - replace it with your own for production builds.
 
 ### Other Workflows
 
@@ -37,3 +36,4 @@ A manually triggered workflow that builds a release APK for distribution.
 - **Merge Queue (`merge.yml`)**: Builds debug APK for merge queue
 - **Upload Dependency List and Debug App (`post_merge.yml`)**: Runs after merge to main branch, uploads debug APK and dependency list
 - **Comment on Pull Request (`post_build.yml`)**: Posts APK diff and dependency diff comments on pull requests
+
