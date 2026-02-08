@@ -79,7 +79,7 @@ jobs:
           retention-days: 1
 
       - name: Get dependencies list
-        run: ./gradlew :app:dependencies --configuration madaniReleaseRuntimeClasspath > current_dependencies.txt
+        run: ./gradlew :app:dependencies --configuration madaniReleaseRuntimeClasspath -PdisableFirebase > current_dependencies.txt
 
       - name: Download Previous Dependencies List
         uses: dawidd6/action-download-artifact@v14
